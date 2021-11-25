@@ -1,27 +1,37 @@
-const score = document.createElement("div");
-const playerScore = document.createElement("p");
-const computerScore = document.createElement("p");
-score.appendChild(playerScore);
-score.appendChild(computerScore);
-document.body.appendChild(score);
+function game() {
+	const score = document.createElement("div");
+	const playerScore = document.createElement("p");
+	const computerScore = document.createElement("p");
+	score.appendChild(playerScore);
+	score.appendChild(computerScore);
+	document.body.appendChild(score);
 
-let playerScoreCount = 0;
-let computerScoreCount = 0;
+	let playerScoreCount = 0;
+	let computerScoreCount = 0;
 
-const buttons = document.querySelectorAll("button");
-buttons.forEach((key) => {
-	key.addEventListener("click", playRound);
-});
+	const buttons = document.querySelectorAll("button");
+	buttons.forEach((key) => {
+		key.addEventListener("click", playRound);
+	});
 
-function playRound() {
-	if (playerScoreCount === 5 || computerScoreCount === 5) return;
-	const playerChoice = this.textContent.toLowerCase();
-	const computerChoice = playComputer();
-	const winner = decideWinner(playerChoice, computerChoice);
-	updateScore(winner);
-	const message = writeMessage(winner, playerChoice, computerChoice);
-	appendResult(message);
-	if (playerScoreCount === 5 || computerScoreCount === 5) appendFinalResult(winner);
+	function playRound() {
+		if (playerScoreCount === 5 || computerScoreCount === 5) return;
+		const playerChoice = this.textContent.toLowerCase();
+		const computerChoice = playComputer();
+		const winner = decideWinner(playerChoice, computerChoice);
+		updateScore(winner);
+		const message = writeMessage(winner, playerChoice, computerChoice);
+		appendResult(message);
+		if (playerScoreCount === 5 || computerScoreCount === 5)
+			appendFinalResult(winner);
+	}
+
+	function updateScore(winner) {
+		if (winner === "player") playerScoreCount++;
+		else if (winner === "computer") computerScoreCount++;
+		playerScore.textContent = `You've won ${playerScoreCount} rounds`;
+		computerScore.textContent = `Computer has won ${computerScoreCount} rounds`;
+	}
 }
 
 function playComputer() {
@@ -29,26 +39,19 @@ function playComputer() {
 	return options[Math.floor(Math.random() * 3)];
 }
 
-function decideWinner(player, computer) {
+function decideWinner(playerChoice, computerChoice) {
 	const options = {
 		rock: 1,
 		paper: 2,
 		scissors: 3,
 	};
-	if (options[player] === options[computer]) return "draw";
+	if (options[playerChoice] === options[computerChoice]) return "draw";
 	if (
-		options[player] - options[computer] === 1 ||
-		options[player] - options[computer] === -2
+		options[playerChoice] - options[computerChoice] === 1 ||
+		options[playerChoice] - options[computerChoice] === -2
 	)
 		return "player";
 	return "computer";
-}
-
-function updateScore(winner) {
-	if (winner === "player") playerScoreCount++;
-	else if (winner === "computer") computerScoreCount++;
-	playerScore.textContent = `You've won ${playerScoreCount} rounds`;
-	computerScore.textContent = `Computer has won ${computerScoreCount} rounds`;
 }
 
 function writeMessage(winner, playerChoice, computerChoice) {
@@ -76,3 +79,5 @@ function appendFinalResult(winner) {
 	final.textContent = msg;
 	document.body.appendChild(final);
 }
+
+game();
